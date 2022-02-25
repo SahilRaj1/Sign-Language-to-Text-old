@@ -1,9 +1,15 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter import filedialog
 
 root = Tk()
 root.title("Sign Language to Text convertor")
 root.geometry("700x700")
+
+
+def UploadAction(event=None):
+    filename = filedialog.askopenfilename()
+    print("Selected:", dataset / single_prediction)
 
 
 def myIns():
@@ -14,7 +20,9 @@ def myIns():
 
 
 def myAbout():
-    messagebox.showinfo("About", f"Sign Language to text {chr(169)}\nSahil, Saatvik, Anushka, Vithi")
+    messagebox.showinfo(
+        "About", f"Sign Language to text {chr(169)}\nSahil, Saatvik, Anushka, Vithi"
+    )
 
 
 l1 = Label(root, text="SIGN LANGUAGE TO TEXT ", font="arial 24 bold", fg="blue")
@@ -58,6 +66,11 @@ l3.place(x=50, y=550)
 
 l3 = Label(root, text="NO OF DIGITS  : ", font="arial 20 bold", fg="black")
 l3.place(x=50, y=600)
+
+button1 = Button(root, text="Apne haath ka photu daal", command=UploadAction).place(
+    x=270, y=280
+)
+# button1.pack()
 
 
 root.mainloop()
