@@ -1,15 +1,72 @@
+from distutils.command.upload import upload
+from fileinput import filename
 from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
+from PIL import Image, ImageTk
+from keras.preprocessing import image
+import cv2
+# import joblib
+import numpy as np
+from keras.models import model_from_json
+
 
 root = Tk()
 root.title("Sign Language to Text convertor")
-root.geometry("700x700")
+root.geometry("700x550")
 
 
-def UploadAction(event=None):
-    filename = filedialog.askopenfilename()
-    print("Selected:", dataset / single_prediction)
+def upload_file(flag=None):
+    f_types = [("Jpg files", "*.jpg"), ("PNG files", "*.png"), ("Jpeg files", "*.jpeg")]
+    filename = filedialog.askopenfilename(filetypes=f_types)
+    display_img = ImageTk.PhotoImage(file=filename)
+    e1 = Label(root, image=display_img).place(x=280, y=180)
+    # l2 = Label(root, text=str(filename)).place(x=155, y=60)
+    # applying filter
+    file = str(filename)
+    frame = cv2.imread(file)
+    img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(img, (5, 5), 2)
+    th3 = cv2.adaptiveThreshold(
+        blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2
+    )
+    ret, res = cv2.threshold(th3, 70, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    cv2.imwrite(file, res)
+    
+    # making prediction
+    fil_img = image.load_img(file, target_size = (128, 128), color_mode='grayscale')
+    test_image = image.img_to_array(fil_img)
+    test_image = np.expand_dims(test_image, axis=0)
+
+    json_file = open('model-bw.json', 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
+    # load weights into new model
+    loaded_model.load_weights("model-bw.h5")
+
+    result = loaded_model.predict(test_image)
+    lis = [i for i in range(9)]
+    prediction={}
+    prediction['blank'] = result[0][0]
+    inde = 0
+    sum = 0
+    for i in lis:
+        prediction[i] = result[0][inde]
+        inde += 1
+    max = 0
+    output = 0
+    for key, value in prediction.items():
+        if key == "blank":
+            continue
+        sum += value
+        if value > max:
+            max = value
+            output = key
+
+    l3 = Label(root, text=str(output+1), font="arial 20 bold", fg="black").place(x=500, y=430)
+    l3.pack()
+    e1["image"] = display_img
 
 
 def myIns():
@@ -26,7 +83,7 @@ def myAbout():
 
 
 l1 = Label(root, text="SIGN LANGUAGE TO TEXT ", font="arial 24 bold", fg="blue")
-l1.place(x=150, y=40)
+l1.place(x=155, y=50)
 
 
 btn_about = Button(
@@ -55,22 +112,17 @@ btn_ins.place(y=0, x=0)
 
 
 f1 = Frame(root, bg="white", bd=5, relief=SUNKEN)
-f1.place(x=140, y=140, height=300, width=400)
+f1.place(x=280, y=180, height=128, width=128)
 
 
-l2 = Label(root, text="CHARACTER   : ", font="arial 20 bold", fg="black")
-l2.place(x=50, y=500)
+l2 = Label(root, text="PREDICTED NUMBER   : ", font="arial 20 bold", fg="black")
+l2.place(x=50, y=430)
 
-l3 = Label(root, text="NUMBER          : ", font="arial 20 bold", fg="black")
-l3.place(x=50, y=550)
-
-l3 = Label(root, text="NO OF DIGITS  : ", font="arial 20 bold", fg="black")
-l3.place(x=50, y=600)
-
-button1 = Button(root, text="Apne haath ka photu daal", command=UploadAction).place(
-    x=270, y=280
+button1 = Button(root, text="Choose File", command=lambda: upload_file()).place(
+    x=310, y=320
 )
-# button1.pack()
 
 
 root.mainloop()
+app.py
+4 KB
