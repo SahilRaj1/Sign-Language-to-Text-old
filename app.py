@@ -124,5 +124,3 @@ button1 = Button(root, text="Choose File", command=lambda: upload_file()).place(
 
 
 root.mainloop()
-app.py
-4 KB
