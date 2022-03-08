@@ -64,7 +64,7 @@ def upload_file(flag=None):
             max = value
             output = key
 
-    l3 = Label(root, text=str(output+1), font="arial 20 bold", fg="black").place(x=500, y=430)
+    l3 = Label(root, text=str(output+1), font="arial 18 bold",fg="slateblue").place(x=470, y=429)
     l3.pack()
     e1["image"] = display_img
 
@@ -82,19 +82,19 @@ def myAbout():
     )
 
 
-l1 = Label(root, text="SIGN LANGUAGE TO TEXT ", font="arial 24 bold", fg="blue")
-l1.place(x=155, y=50)
+l1 = Label(root, text="SIGN LANGUAGE TRANSLATOR ", font="arial 24 bold", fg="black")
+l1.place(x=100, y=50)
 
 
 btn_about = Button(
     padx=3,
     pady=3,
     bd=1,
-    fg="white",
+    fg="slateblue",
     font=("ariel", 10, "bold"),
     text="About",
-    bg="black",
     command=myAbout,
+    borderwidth=0
 )
 btn_about.place(y=0, x=650)
 
@@ -102,25 +102,24 @@ btn_ins = Button(
     padx=3,
     pady=3,
     bd=1,
-    fg="white",
+    fg="slateblue",
     font=("ariel", 10, "bold"),
     text="Instruction",
-    bg="black",
     command=myIns,
+    borderwidth=0
 )
 btn_ins.place(y=0, x=0)
 
-
-f1 = Frame(root, bg="white", bd=5, relief=SUNKEN)
+mf = Frame(root, bg="mediumspringgreen").place(x=180, y=110, height=280, width=328)
+f1 = Frame(mf, bg="white", bd=5, relief=SUNKEN)
 f1.place(x=280, y=180, height=128, width=128)
 
 
-l2 = Label(root, text="PREDICTED NUMBER   : ", font="arial 20 bold", fg="black")
-l2.place(x=50, y=430)
+l2 = Label(root, text="PREDICTED NUMBER  : ", font="arial 18", fg="black")
+l2.place(x=190, y=430)
 
-button1 = Button(root, text="Choose File", command=lambda: upload_file()).place(
-    x=310, y=320
-)
+button1 = Button(root, text="Choose File",borderwidth=0,fg="mediumslateblue", command=lambda: upload_file()).place(x=310, y=320)
 
 
 root.mainloop()
+
